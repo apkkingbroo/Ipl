@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPL 2025 LIVE</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #181818, #0d0d0d);
+            background: #121212;
             color: white;
             margin: 0;
             padding: 0;
@@ -20,18 +25,20 @@
             padding: 15px;
         }
         .header {
-            background: #ff4500;
+            background: #ff4081;
             padding: 15px;
             font-size: 24px;
             font-weight: bold;
             border-radius: 10px;
+            color: black;
             text-transform: uppercase;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
         .video-container {
             position: relative;
             width: 100%;
             padding-top: 56.25%;
-            border: 3px solid #ff4500;
+            border: 3px solid #ff4081;
             border-radius: 10px;
             margin-top: 15px;
             background: black;
@@ -57,44 +64,85 @@
         }
         .controls {
             margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
         .btn {
-            background: #ff4500;
-            color: white;
+            background: #ff4081;
+            color: black;
             border: none;
             padding: 10px 15px;
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
-            margin: 5px;
             transition: 0.3s;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn i {
+            font-size: 18px;
         }
         .btn:hover {
-            background: #e03e00;
+            background: #e63772;
         }
+        
+        /* Stylish Quality Selector */
         .quality-selector {
             margin-top: 10px;
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0px 4px 10px rgba(255, 64, 129, 0.5);
         }
-        .telegram-btn {
+        .quality-selector select {
+            background: #ff4081;
+            border: none;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        /* Toast Notification */
+        .toast {
             position: fixed;
             bottom: 20px;
-            left: 20px;
-            width: 60px;
-            height: 60px;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg') no-repeat center/contain;
-            animation: moveUpDown 1s infinite alternate;
-            cursor: pointer;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff4081;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: fadeIn 0.5s;
         }
-        @keyframes moveUpDown {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
+        .toast button {
+            background: white;
+            border: none;
+            color: black;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header">IPL 2025 LIVE STREAM</div>
+        <div class="header">🏏 IPL 2025 LIVE STREAM</div>
 
         <div class="video-container">
             <div class="live-badge">LIVE</div>
@@ -102,29 +150,37 @@
         </div>
 
         <div class="controls">
-            <button class="btn" onclick="togglePIP()">📺 Picture-in-Picture</button>
-            <button class="btn" onclick="toggleFullScreen()">🔳 Full Screen</button>
+            <button class="btn" onclick="togglePIP()">
+                <i class="fa-solid fa-clone"></i> PIP Mode
+            </button>
+            <button class="btn" onclick="toggleFullScreen()">
+                <i class="fa-solid fa-expand"></i> Full Screen
+            </button>
         </div>
 
         <div class="quality-selector">
-            <label for="quality">Select Quality:</label>
+            <label for="quality">📡 Select Quality:</label>
             <select id="quality" onchange="changeQuality()">
                 <option value="https://m3u8.cloudycx.net/media/hls/files/240p.m3u8">240p</option>
-                <option value="https://m3u8.cloudycx.net/media/hls/files/360p.m3u8">360p</option>
-                <option value="https://m3u8.cloudycx.net/media/hls/files/480p.m3u8">480p</option>
-                <option value="https://myctxa.temycssme.wiki/720p.m3u8" selected>720p</option>
-                <option value="https://m3u8.cloudycx.net/media/hls/files/1080p.m3u8">1080p</option>
+                <option value="https://1a-1791.com/live/41ac4fe/slot-35/wuie-hmev_360p/chunklist_DVR.m3u8" selected>360p</option>
+                <option value="https://1a-1791.com/live/41ac4fe/slot-35/wuie-hmev_480p.m3u8">480p</option>
+                <option value="https://myctxa.temycssme.wiki/720p.m3u8">720p</option>
+                <option value="https://1a-1791.com/live/41ac4fe/slot-35/wuie-hmev_1080p/chunklist_DVR.m3u8">1080p</option>
             </select>
         </div>
 
     </div>
 
-    <div class="telegram-btn" onclick="window.open('https://telegram.me/apkmodderking', '_blank')"></div>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        🎉 Join our Telegram for Updates!  
+        <button onclick="hideToast()">OK</button>
+    </div>
 
     <script>
         var hls = new Hls();
         var video = document.getElementById('main-video');
-        var currentQuality = "https://myctxa.temycssme.wiki/720p.m3u8";
+        var currentQuality = "https://1a-1791.com/live/41ac4fe/slot-35/wuie-hmev_360p/chunklist_DVR.m3u8";
 
         function playStream(src) {
             if (Hls.isSupported()) {
@@ -166,6 +222,15 @@
             }
         }
 
+        function showToast() {
+            document.getElementById('toast').style.display = "block";
+        }
+
+        function hideToast() {
+            document.getElementById('toast').style.display = "none";
+        }
+
+        setTimeout(showToast, 5000);
         playStream(currentQuality);
     </script>
 
