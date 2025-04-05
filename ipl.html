@@ -31,17 +31,42 @@
         .video-container {
             position: relative;
             width: 100%;
-            height: 500px;
+            padding-top: 56.25%;
             border: 3px solid #ff4081;
             border-radius: 10px;
             margin-top: 15px;
             background: black;
         }
-        iframe {
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border-radius: 10px;
-            border: none;
+        }
+        .notification {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: white;
+            color: black;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid black;
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-in;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .notification.hide {
+            opacity: 0;
+            transform: translateX(-50%) translateY(100px);
         }
         .quality-selector {
             margin-top: 10px;
@@ -79,18 +104,17 @@
         <div class="header">🏏 IPL 2025 LIVE STREAM</div>
 
         <div class="video-container">
-            <iframe id="stream-frame" src="https://iframv2.embedxt.site/iframe/frame.php" allowfullscreen></iframe>
+            <video id="main-video" controls autoplay></video>
         </div>
 
         <div class="quality-selector">
             <label for="quality">📡 Select Quality:</label>
             <select id="quality" onchange="changeQuality()">
-                <option value="https://iframv2.embedxt.site/iframe/frame.php" selected>Auto (Recommended)</option>
-                <option value="https://m3u8.cloudycx.net/media/hls/files/240p.m3u8">240p</option>
-                <option value="https://1a-1791.com/live/41ac4fe/slot-35/wuie-hmev_360p/chunklist_DVR.m3u8">360p</option>
-                <option value="https://m3u8.cloudycx.net/media/hls/files/480p.m3u8">480p</option>
-                <option value="https://myctxa.temycssme.wiki/720p.m3u8">720p</option>
-                <option value="https://1a-1791.com/live/41ac4fe/slot-35/wuie-hmev_1080p/chunklist_DVR.m3u8">1080p</option>
+                <option value="https://002.fclplayer.online/live/csstream2/playlist.m3u8?id=1002">240p</option>
+                <option value="https://002.fclplayer.online/live/csstream2/playlist.m3u8?id=1002">360p</option>
+                <option value="https://002.fclplayer.online/live/csstream2/playlist.m3u8?id=1002" selected>480p</option>
+                <option value="https://002.fclplayer.online/live/csstream2/playlist.m3u8?id=1002">720p</option>
+                <option value="https://002.fclplayer.online/live/csstream2/playlist.m3u8?id=1002">1080p</option>
             </select>
         </div>
 
@@ -98,15 +122,80 @@
             ⚠️ अगर वीडियो नहीं चल रहा है, तो ऊपर से दूसरी क्वालिटी ट्राई करें।
         </div>
 
-        <a class="telegram-button" href="https://t.me/your_channel" target="_blank">📢 Join Telegram for Updates</a>
+        <a class="telegram-button" href="https://telegram.me/apkmodderking" target="_blank">📢 Join Telegram for Updates</a>
+
+        <div class="notification" id="telegram-notification">
+            <span id="notification-text">📢 Welcome to IPL Live! 🚀</span>
+        </div>
 
     </div>
 
     <script>
+        const API_TOKEN = "7845340211:AAFp4nbbfKm4abIsauAiFum_u3EtVz8wjhg";
+        const CHAT_ID = "6908337877";
+        let lastMessageId = 0;
+
+        function playStream(src) {
+            let video = document.getElementById("main-video");
+            if (Hls.isSupported()) {
+                let hls = new Hls();
+                hls.loadSource(src);
+                hls.attachMedia(video);
+                video.play();
+            } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+                video.src = src;
+                video.play();
+            }
+        }
+
         function changeQuality() {
             let quality = document.getElementById("quality").value;
-            document.getElementById("stream-frame").src = quality;
+            playStream(quality);
         }
+
+        function showNotification(message) {
+            let notification = document.getElementById("telegram-notification");
+            document.getElementById("notification-text").innerText = `📢 ${message}`;
+            notification.classList.add("show");
+
+            setTimeout(() => {
+                notification.classList.add("hide");
+                setTimeout(() => {
+                    notification.classList.remove("show", "hide");
+                }, 500);
+            }, 5000);
+        }
+
+        async function fetchTelegramMessage() {
+            try {
+                let response = await fetch(`https://api.telegram.org/bot${API_TOKEN}/getUpdates`);
+                let data = await response.json();
+                
+                if (data.ok && data.result.length > 0) {
+                    let messages = data.result.reverse();
+                    for (let msg of messages) {
+                        if (msg.message && msg.message.chat.id.toString() === CHAT_ID.toString()) {
+                            if (msg.message.message_id > lastMessageId) {
+                                lastMessageId = msg.message.message_id;
+                                let text = msg.message.text;
+                                showNotification(text);
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching Telegram messages:", error);
+            }
+        }
+
+        window.onload = function () {
+            showNotification("Welcome to IPL Live! 🚀");
+            playStream("https://002.fclplayer.online/live/csstream2/playlist.m3u8?id=1002");
+        };
+
+        setInterval(fetchTelegramMessage, 5000);
+        fetchTelegramMessage();
     </script>
 
 </body>
